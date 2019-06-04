@@ -1,16 +1,17 @@
 const Telegraf = require('telegraf');
 const bot = new Telegraf('626608018:AAFwv0aUb7kZklzZ0d0tDcvpGzz-tRE2ERA');
+const port = process.env.PORT || 3000
 const debug = false;
 bot.start((message) => {
   console.log('started:', message.from.id)
   return message.reply('Daje co sti dadi!!');
 });
-bot.on('text', (message) => {
+bot.hears(/./, (message) => {
 	const roll = message.message.text;
 	console.log(roll);
 	try{
 		var match = roll.match(/(\d*)d(\d*)/);
-		if(match.length < 2)
+		if(!match || match.length < 2)
 		{
 		  return message.reply("Si vabbè, ma pe chi m'hai preso?");
 		}
