@@ -1,0 +1,14 @@
+{
+  "name": "rolldice",
+  "version": "1.0.0",
+  "description": "Telegram roll dice",
+  "main": "index.js",
+  "scripts": {
+    "test": "a"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^3.30.1"
+  }
+}
