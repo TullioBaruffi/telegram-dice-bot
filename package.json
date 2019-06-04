@@ -4,7 +4,7 @@
   "description": "Telegram roll dice",
   "main": "index.js",
   "scripts": {
-    "test": "a"
+    "start": "index.js"
   },
   "author": "",
   "license": "ISC",
