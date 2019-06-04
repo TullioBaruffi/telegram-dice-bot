@@ -1,7 +1,20 @@
 const Telegraf = require('telegraf');
 const bot = new Telegraf('626608018:AAFwv0aUb7kZklzZ0d0tDcvpGzz-tRE2ERA');
-const port = process.env.PORT || 3000
 const debug = false;
+
+const cool = require('cool-ascii-faces')
+const express = require('express')
+const path = require('path')
+const PORT = process.env.PORT || 5000
+
+express()
+  .use(express.static(path.join(__dirname, 'public')))
+  .set('views', path.join(__dirname, 'views'))
+  .set('view engine', 'ejs')
+  .get('/', (req, res) => res.render('pages/index'))
+  .get('/cool', (req, res) => res.send(cool()))
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
 bot.start((message) => {
   console.log('started:', message.from.id)
   return message.reply('Daje co sti dadi!!');
@@ -45,4 +58,4 @@ bot.hears(/./, (message) => {
 		return message.reply('Mica ho capito che hai detto??');
 	}
 });
-bot.startPolling();
+bot.launch();
