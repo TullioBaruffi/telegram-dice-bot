@@ -12,7 +12,7 @@ const Random = require('rng');
 // Instantiate a new Mersenne Twister with a seed
 var mt = new Random.MT(Date.now());
 setInterval(function() {
-    http.get("https://telegram-rolldice.herokuapp.com/");
+    http.get("http://telegram-rolldice.herokuapp.com/");
 	mt = new Random.MT(Date.now());
 }, 300000); // every 5 minutes (300000)
 express()
