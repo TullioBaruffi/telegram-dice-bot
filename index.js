@@ -6,9 +6,14 @@ const cool = require('cool-ascii-faces')
 const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
-var http = require("http");
+const http = require("http");
+// Require the module
+const Random = require('rng');
+// Instantiate a new Mersenne Twister with a seed
+var mt = new Random.MT(Date.now());
 setInterval(function() {
     http.get("https://telegram-rolldice.herokuapp.com/");
+	mt = new Random.MT(Date.now());
 }, 300000); // every 5 minutes (300000)
 express()
   .use(express.static(path.join(__dirname, 'public')))
@@ -46,7 +51,7 @@ bot.hears(/./, (message) => {
 		var max = Math.floor(intensity);
 		
 		for(var i = 0; i<number;i++){
-			result += Math.floor(Math.random() * (max - min + 1)) + min;
+			result += mt.range(min, max);
 			if(debug){
 				console.log('min:' + min);
 				console.log('max:' + max);
