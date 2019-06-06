@@ -31,17 +31,22 @@ bot.hears(/./, (message) => {
 	const roll = message.message.text;
 	console.log(roll);
 	try{
-		var match = roll.match(/(\d*)d(\d*)/);
+		var match = roll.match(/(\d+)d(\d+)([+|-])?(\d+)?/);
 		if(!match || match.length < 2)
 		{
 		  return message.reply("Si vabbè, ma pe chi m'hai preso?");
 		}
+		
 		var number = parseInt(match[1], 10);
 		var intensity = parseInt(match[2], 10);
+		var sign = match[3];
+		var mod = parseInt(match[4], 10);
 		
 		if(debug){
-			console.log('match[0]: ' + match[1]);
-			console.log('match[1]: ' + match[2]);
+			console.log('match[1]: ' + match[1]);
+			console.log('match[2]: ' + match[2]);
+			console.log('match[3]: ' + match[3]);
+			console.log('match[4]: ' + match[4]);
 			console.log('number: ' + number);
 			console.log('intensity: ' + intensity);
 		}
@@ -49,9 +54,12 @@ bot.hears(/./, (message) => {
 		var result = 0;
 		var min = 1;
 		var max = Math.floor(intensity);
+		var splittedThrow = "";
 		
 		for(var i = 0; i<number;i++){
-			result += mt.range(min, max);
+			var diceResult = mt.range(min, max);
+			splittedThrow += diceResult + " + ";
+			result += diceResult;
 			if(debug){
 				console.log('min:' + min);
 				console.log('max:' + max);
@@ -59,7 +67,25 @@ bot.hears(/./, (message) => {
 			}
 		}
 		
-		return message.reply(result);
+		if(splittedThrow){
+			splittedThrow = splittedThrow.substring(0, splittedThrow.length - 2);
+		}
+		
+		var displayResult = result;
+		if(number > 1){
+			displayResult = splittedThrow + "= " + result;
+		}
+		
+		if(sign && mod){
+			if(sign == '+'){
+				result += mod; 
+			}else{
+				result -= mod;
+			}
+			displayResult += " " + sign + " " + mod + " = " + result;
+		}
+		
+		return message.reply(displayResult);
 	}
 	catch(err){
 		console.log(err);
