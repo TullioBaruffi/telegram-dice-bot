@@ -7,7 +7,8 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const http = require("http");
-const xorshift = require('xorshift');
+const XorShift = require('xorshift').constructor;
+const MaxResultLength = 2000;
 
 setInterval(function() {
     http.get("http://telegram-rolldice.herokuapp.com/cool");
@@ -48,28 +49,43 @@ bot.hears(/./, (message) => {
 			console.log('intensity: ' + intensity);
 		}
 		
+		if(number > 10000){
+			return message.reply("Te stai a allargà!");
+		}
+		
 		var result = 0;
 		var min = 1;
-		var max = Math.floor(intensity);
+		var max = min + Math.floor(intensity);
 		var splittedThrow = "";
 		
+		var rng = new XorShift([Math.floor(new Date().getMilliseconds() / 2), 0, new Date().getMilliseconds() * new Date().getMinutes(), 0]);
+		
 		for(var i = 0; i<number;i++){
-			var diceResult = Math.floor(min + xorshift().random() * (max - min));
-			splittedThrow += diceResult + " + ";
+			var rnd = rng.random();
+			var diceResult = Math.floor(min + rnd * (max - min));
+			
+			if(splittedThrow.length < MaxResultLength){
+				splittedThrow += diceResult + " + ";
+			}
+			
 			result += diceResult;
 			if(debug){
+				console.log('xorshift.random:' + rnd);
 				console.log('min:' + min);
 				console.log('max:' + max);
-				console.log('result:' + result);
+				console.log('diceResult:' + diceResult);
 			}
 		}
 		
 		if(splittedThrow){
 			splittedThrow = splittedThrow.substring(0, splittedThrow.length - 2);
-		}
+		}		
 		
 		var displayResult = result;
 		if(number > 1){
+			if(splittedThrow.length >= MaxResultLength){
+				splittedThrow = splittedThrow + "...";
+			}
 			displayResult = splittedThrow + "= " + result;
 		}
 		
