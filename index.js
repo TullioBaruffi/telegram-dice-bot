@@ -9,21 +9,25 @@ const PORT = process.env.PORT || 5000
 const http = require("http");
 const XorShift = require('xorshift').constructor;
 const MaxResultLength = 2000;
+const date = new Date();
+const rng = new XorShift([date.getMilliseconds(), 0, date.getMilliseconds() * date.getSeconds(), 0]);
 
 setInterval(function() {
     http.get("http://telegram-rolldice.herokuapp.com/cool");
+	rng.random();
 }, 300000); // every 5 minutes (300000)
 express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/cool', (req, res) => res.send(cool()))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+	.use(express.static(path.join(__dirname, 'public')))
+	.set('views', path.join(__dirname, 'views'))
+	.set('view engine', 'ejs')
+	.get('/', (req, res) => res.render('pages/index'))
+	.get('/cool', (req, res) => res.send(cool()))
+	.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 bot.start((message) => {
-  console.log('started:', message.from.id)
-  return message.reply('Daje co sti dadi!!');
+	rng.random();
+	console.log('started:', message.from.id)
+	return message.reply('Daje co sti dadi!!');
 });
 bot.hears(/./, (message) => {
 	const roll = message.message.text;
@@ -58,9 +62,14 @@ bot.hears(/./, (message) => {
 		var max = min + Math.floor(intensity);
 		var splittedThrow = "";
 		
-		var rng = new XorShift([Math.floor(new Date().getMilliseconds() / 2), 0, new Date().getMilliseconds() * new Date().getMinutes(), 0]);
+		var chaos = Math.floor(new Date().getMilliseconds / 10);
 		
 		for(var i = 0; i<number;i++){
+			
+			for(var a = 0; a < chaos; a++){
+				rng.random();
+			}
+			
 			var rnd = rng.random();
 			var diceResult = Math.floor(min + rnd * (max - min));
 			
