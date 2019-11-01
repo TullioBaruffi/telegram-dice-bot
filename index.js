@@ -13,8 +13,12 @@ const date = new Date();
 const rng = new XorShift([date.getMilliseconds(), 0, date.getMilliseconds() * date.getSeconds(), 0]);
 
 setInterval(function() {
-    http.get("http://telegram-rolldice.herokuapp.com/cool");
-	rng.random();
+	var d = new Date();
+	var n = d.getHours();
+	if(n > 9){
+		http.get("http://telegram-rolldice.herokuapp.com/cool");
+		rng.random();
+	}
 }, 300000); // every 5 minutes (300000)
 express()
 	.use(express.static(path.join(__dirname, 'public')))
